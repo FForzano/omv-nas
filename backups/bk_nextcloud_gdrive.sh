@@ -20,23 +20,29 @@ rclone copy "$PATH_TO_BACKUP/$DUMP_NAME" "$BACKUP_ROOT/dump/" --progress --log-f
 rm "$PATH_TO_BACKUP/$DUMP_NAME"
 
 rclone sync "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/nextcloud/data" "$BACKUP_ROOT/folders/data" \
-  --backup-dir "$BACKUP_ROOT/nextcloud/old/$DATE" \
+  --backup-dir "$BACKUP_ROOT/old/$DATE" \
   --progress --log-file="$LOG" \
   --drive-pacer-min-sleep 100ms \
   --drive-pacer-burst 100 \
-  --checkers 4
+  --checkers 1 \
+  --fast-list
 
-rclone mkdir "$BACKUP_ROOT/nextcloud/old"
-rclone mkdir "$BACKUP_ROOT/nextcloud/old/$DATE"
+rclone mkdir "$BACKUP_ROOT/old"
+rclone mkdir "$BACKUP_ROOT/old/$DATE"
 rclone sync "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/nextcloud/config" "$BACKUP_ROOT/folders/config" \
-  --backup-dir "$BACKUP_ROOT/nextcloud/old/$DATE" \
+  --backup-dir "$BACKUP_ROOT/old/$DATE" \
   --progress --log-file="$LOG" \
   --drive-pacer-min-sleep 100ms \
   --drive-pacer-burst 100 \
-  --checkers 4
+  --checkers 1 \
+  --fast-list
 
 docker exec nextcloud occ maintenance:mode --off >>"$LOG" 2>&1
 echo "Nextcloud maintenance OFF" >> "$LOG" 2>&1
+
+set +e
+rclone delete "$BACKUP_ROOT/old/" --min-age 7d --rmdirs --log-file="$LOG"
+set -e
 
 echo "Backup Nextcloud OK" >> "$LOG" 2>&1
 truncate -s 10M "$LOG"
