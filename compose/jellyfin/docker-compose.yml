@@ -1,0 +1,17 @@
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=Europe/Rome
+    volumes:
+      - CHANGE_TO_COMPOSE_DATA_PATH/jellyfin:/config
+      - /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Film:/media/movies
+      - /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Series:/media/series
+      - /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica:/media/music  
+      - /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Download:/media/downloads
+    ports:
+      - 8096:8096
+    restart: unless-stopped

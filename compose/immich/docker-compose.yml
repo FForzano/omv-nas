@@ -1,0 +1,109 @@
+name: immich
+services:
+  immich-server:
+    container_name: immich_server
+    environment:
+      - PGID=100
+      - PUID=1000
+      - TZ=Europe/Rome
+      - DB_HOSTNAME=immich_postgres
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE_NAME=${DB_DATABASE_NAME}
+      - REDIS_HOSTNAME=immich_redis
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    networks:
+      default: null
+    ports:
+      - "2283:2283"
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/upload
+        target: ${UPLOAD_LOCATION}
+        bind: {}
+      - type: bind
+        source: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/profiles
+        target: /usr/src/app/profiles
+        bind: {}
+    depends_on:
+      - redis
+      - database
+      - immich-microservices
+
+  immich-microservices:
+    container_name: immich_microservices
+    environment:
+      - PGID=100
+      - PUID=1000
+      - TZ=Europe/Rome
+      - DB_HOSTNAME=immich_postgres
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE_NAME=${DB_DATABASE_NAME}
+      - REDIS_HOSTNAME=immich_redis
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    networks:
+      default: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/upload
+        target: ${UPLOAD_LOCATION}
+        bind: {}
+      - type: bind
+        source: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/models
+        target: /usr/src/app/models
+        bind: {}
+    depends_on:
+      - redis
+      - database
+
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    environment:
+      - MACHINE_LEARNING_CACHE_FOLDER=/cache
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    networks:
+      default: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/models
+        target: /usr/src/app/models
+        bind: {}
+      - model-cache:/cache
+    cpu_shares: 512
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+
+  redis:
+    container_name: immich_redis
+    image: registry.hub.docker.com/library/redis:7.2-alpine
+    networks:
+      default: null
+    restart: unless-stopped
+
+  database:
+    container_name: immich_postgres
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_DB=${DB_DATABASE_NAME}
+    image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.0
+    networks:
+      default: null
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/db
+        target: /var/lib/postgresql/data
+        bind: {}
+
+volumes:
+  model-cache:
+networks:
+  default:
+    name: immich_default
