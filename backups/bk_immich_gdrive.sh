@@ -23,9 +23,9 @@ rclone mkdir "$BACKUP_ROOT/old/$DATE"
 rclone sync "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/immich/upload" "$BACKUP_ROOT/upload/" \
   --backup-dir "$BACKUP_ROOT/old/$DATE" \
   --progress --log-file="$LOG" \
-  --drive-pacer-min-sleep 100ms \
-  --drive-pacer-burst 100 \
-  --checkers 1 \
+  --drive-pacer-min-sleep 250ms \
+  --drive-pacer-burst 400 \
+  --checkers 4 \
   --fast-list
 
 echo "Backup Immich OK" >> "$LOG" 2>&1
