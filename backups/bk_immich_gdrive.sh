@@ -31,9 +31,7 @@ rclone sync "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/appdata/
 echo "Backup Immich OK" >> "$LOG" 2>&1
 
 echo "Pulizia old >7gg" >> "$LOG" 2>&1
-set +e
-rclone delete "$BACKUP_ROOT/old/" --min-age 7d --rmdirs --log-file="$LOG"
-set -e
+rclone delete "$BACKUP_ROOT/old/" --min-age 7d --rmdirs --log-file="$LOG" --ignore-errors || true
 
 echo "Backup Immich completato" | tee -a "$LOG"
 truncate -s 10M "$LOG"
