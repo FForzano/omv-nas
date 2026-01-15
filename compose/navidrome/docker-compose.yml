@@ -1,0 +1,13 @@
+name: navidrome
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    user: 1000:100 
+    ports:
+      - "4533:4533"
+    restart: unless-stopped
+    environment:
+      ND_SCANSCHEDULE: "1h *"
+    volumes:
+      - "CHANGE_TO_COMPOSE_DATA_PATH/navidrome/data:/data"
+      - "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica:/music:ro"

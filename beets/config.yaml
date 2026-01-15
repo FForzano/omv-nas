@@ -1,0 +1,18 @@
+directory: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica # Replace with your directory
+library: /home/nas-master/.config/beets/library.db # Replace with your user
+
+plugins: fetchart embedart embedalbumart replaygain lyrics
+
+paths:
+  default: '$albumartist/$year - $album/$disc_total/$track_pad - $title'
+  comp: 'Various Artists/$year - $album/$track_pad - $title ($albumartist)'
+
+import:
+  move: yes
+
+lyrics:
+  auto: yes
+  sources: genius musixmatch azlyrics
+
+replaygain:
+  target_norm: 89
