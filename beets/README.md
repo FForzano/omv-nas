@@ -27,13 +27,19 @@ mkdir -p ~/.config/beets
 
 2. copy the `config.yaml` file in it
 ```bash
-scp beets/config.yaml your_user@your_ip:~/.config/beets
+scp beets/config.yaml your_user@your_ip:~/.config/beets/
+```
+
+## Copy the script
+1. Copy the `beets-maintenance.sh` file in your user bin folder
+```bash
+scp beets/beets-maintenance.sh your_user@your_ip:~/scripts/
+```
+2. Ensure execution priviledges to the script
+```bash
+chmod +x ~/scripts/beets-maintenance.sh
 ```
 
 ## Create a cron job
 1. Open OMV web interface and go to `System > Scheduled Tasks`
-2. Create two cronjobs running the following command once a day:
-```bash
-PATH=/home/nas-master/beets-venv/bin:$PATH /usr/local/bin/beet import "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica" --incremental --quiet >> /var/log/beets-import.log 2>&1
-PATH=/home/nas-master/beets-venv/bin:$PATH /usr/local/bin/beet lyrics "*" >> /var/log/beets-lyrics.log 2>&1
-```
+2. Create a cronjob running the script `beets-maintenance.sh`:

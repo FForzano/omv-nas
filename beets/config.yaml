@@ -1,18 +1,27 @@
 directory: /srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica # Replace with your directory
 library: /home/nas-master/.config/beets/library.db # Replace with your user
 
-plugins: fetchart embedart embedalbumart replaygain lyrics
+plugins: fetchart embedart replaygain lyrics duplicates
 
 paths:
-  default: '$albumartist/$year - $album/$disc_total/$track_pad - $title'
-  comp: 'Various Artists/$year - $album/$track_pad - $title ($albumartist)'
+  default: $albumartist/$year - $album/$disc/$track - $title
+  comp: Various Artists/$year - $album/$track - $title ($albumartist)
 
 import:
   move: yes
+  none_rec_action: asis
+  quiet: yes
 
 lyrics:
   auto: yes
-  sources: genius musixmatch azlyrics
+  sources: genius musixmatch azlyrics lyricsovh metrolyrics
+  min_length: 10  # Ignora testi troppo corti
 
 replaygain:
   target_norm: 89
+  backend: ffmpeg
+
+duplicates:
+  keys: [albumartist, album, title]
+  compare: strong 
+  delete: yes
