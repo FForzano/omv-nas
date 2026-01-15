@@ -7,7 +7,16 @@ discovering of music metadata and lyrics, and structuring data folder.
 ```bash
 sudo apt update
 sudo apt install beets python3-pip ffmpeg
-pip3 install beets[lyrics] --user  # Plugin lyrics + extra
+```
+2. Create a `venv` for beets and activate it
+```bash
+python3 -m venv ~/beets-venv
+source ~/beets-venv/bin/activate
+```
+3. Install lyrics plugin and deactivate the venv
+```bash
+pip install beets[lyrics]  # Plugin lyrics + extra
+deactivate
 ```
 
 ## Configuration
@@ -25,6 +34,6 @@ scp beets/config.yaml your_user@your_ip:~/.config/beets
 1. Open OMV web interface and go to `System > Scheduled Tasks`
 2. Create two cronjobs running the following command once a day:
 ```bash
-/usr/local/bin/beet import "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica" --incremental --quiet >> /var/log/beets-import.log 2>&1
-/usr/local/bin/beet lyrics "*" >> /var/log/beets-lyrics.log 2>&1
+PATH=/home/nas-master/beets-venv/bin:$PATH /usr/local/bin/beet import "/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica" --incremental --quiet >> /var/log/beets-import.log 2>&1
+PATH=/home/nas-master/beets-venv/bin:$PATH /usr/local/bin/beet lyrics "*" >> /var/log/beets-lyrics.log 2>&1
 ```
