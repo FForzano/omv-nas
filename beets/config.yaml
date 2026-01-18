@@ -10,7 +10,12 @@ paths:
 import:
   move: yes
   none_rec_action: asis
-  quiet: yes
+  quiet: no          # ← CAMBIA: Vedi ERRORE/PROMPT
+  incremental: no    # ← AGGIUNGI: Forza re-scan
+  incremental_skip_later: no  # ← AGGIUNGI: Non salta mai
+  duplicate_action: merge
+  threaded: no
+  resume: no
 
 lyrics:
   auto: yes

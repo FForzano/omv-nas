@@ -8,7 +8,7 @@ PATH=/home/nas-master/beets-venv/bin:$PATH
 MUSIC_DIR="/srv/dev-disk-by-uuid-d7e795e1-d44f-4d78-acc2-be119ba2dca3/Musica"
 
 cd "$MUSIC_DIR" || exit 1
-beet remove -f
+beet remove 
 beet import . -m
 beet duplicates
 beet lyrics
