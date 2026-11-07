@@ -10,11 +10,11 @@ Codice e documentazione: <https://github.com/FForzano/lg-invoices-analyzer> (gui
    ```
 2. Sostituisci `CHANGE_TO_COMPOSE_DATA_PATH` nel compose con il percorso `appdata` (come per gli altri servizi).
 3. Copia `example.env` in `.env` e imposta `SECRET_KEY` (`openssl rand -hex 32`).
-4. Avvia: `docker compose up -d --build`. Interfaccia su `http://<ip-nas>:8090`.
+4. Avvia: `docker compose up -d` (scarica l'immagine da GitHub). Interfaccia su `http://<ip-nas>:8090`.
 
 ## Note
 - **Nessuna autenticazione**: lasciala solo in LAN, non esporla sul router.
 - La cartella dati contiene database e PDF delle bollette (dati personali): è inclusa nel backup (`../../backups/bk_bollette_gdrive.sh`).
 - Aggiornamento offerte: pianifica `refresh-offers.sh` una volta a settimana (OMV: *System > Scheduled tasks*).
-- Aggiornamento dell'app: `docker compose up -d --build` (le migrazioni del database sono automatiche). Fai prima un backup.
+- Aggiornamento dell'app: `docker compose pull && docker compose up -d` (le migrazioni del database sono automatiche). Fai prima un backup.
 - La porta 8090 è libera; 8080 è di qBittorrent, 4533 di Navidrome, 446 di Nextcloud.
