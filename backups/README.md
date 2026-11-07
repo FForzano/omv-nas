@@ -18,6 +18,12 @@ To restore your data, follow the official guides:
 - Nextcloud:
   [guide](https://docs.nextcloud.com/server/latest/admin_manual/maintenance/restore.html)
 - Immich: [guide](https://docs.immich.app/administration/backup-and-restore/)
+- Bollette: ferma il container, rimetti `bollette_<data>.db` come `bollette.db` e i PDF in `pdf/`
+  dentro `appdata/bollette/data`, poi riavvia (vedi `compose/bollette/README.md`)
+
+## Bollette
+`bk_bollette_gdrive.sh` salva un'istantanea coerente del database SQLite e i PDF (dati personali: usa il
+remoto cifrato `gdrive_crypt`). Conserva 30 giorni di versioni. Non mette il servizio in manutenzione.
 
 ## Note
 - Nextcloud's backup script set the service in `manteinance`. It will be unusable

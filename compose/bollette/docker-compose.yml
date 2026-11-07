@@ -1,0 +1,17 @@
+name: bollette
+services:
+  bollette:
+    # Costruisce l'immagine dal repository pubblico (https://github.com/FForzano/lg-invoices-analyzer)
+    build: https://github.com/FForzano/lg-invoices-analyzer.git#main
+    container_name: bollette
+    user: 1000:100
+    ports:
+      - "8090:8080"
+    environment:
+      - TZ=Europe/Rome
+      - SECRET_KEY=${SECRET_KEY}
+      # Facoltativo, lasciala disattivata per non inviare mai dati fuori dal NAS.
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - CHANGE_TO_COMPOSE_DATA_PATH/bollette/data:/data
+    restart: unless-stopped
