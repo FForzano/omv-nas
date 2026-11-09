@@ -1,17 +1,39 @@
 name: bollette
+
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: bollette-db
+    environment:
+      - POSTGRES_USER=bollette
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=bollette
+    volumes:
+      - CHANGE_TO_COMPOSE_DATA_PATH/bollette/pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bollette"]
+      interval: 5s
+      retries: 10
+    restart: unless-stopped
+
   bollette:
-    # Immagine costruita dalla CI del repository (https://github.com/FForzano/lg-invoices-analyzer)
     image: ghcr.io/fforzano/lg-invoices-analyzer:latest
     container_name: bollette
     user: 1000:100
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8090:8080"
     environment:
       - TZ=Europe/Rome
       - SECRET_KEY=${SECRET_KEY}
-      # Facoltativo, lasciala disattivata per non inviare mai dati fuori dal NAS.
-      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DATABASE_URL=postgresql://bollette:${DB_PASSWORD}@db:5432/bollette
+      - AUTH_ENABLED=true
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ALLOW_REGISTRATION=false
+      - TRUST_PROXY=false        # metti true solo se c'è un reverse proxy davanti
     volumes:
-      - CHANGE_TO_COMPOSE_DATA_PATH/bollette/data:/data
+      - CHANGE_TO_COMPOSE_DATA_PATH/bollette/data:/data   # qui finiscono i PDF
     restart: unless-stopped
